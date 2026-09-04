@@ -2,7 +2,7 @@
 
 ## Immutable pre-run gates
 
-1. Run only a case produced by `model/configure_vx_formal_case_v3.m`.
+1. Run only a case produced by `matlab/configure_vx_formal_case_v3.m`.
 2. Verify source model, estimator, parameter, and wrapper hashes against `case_handoff.json` immediately before simulation.
 3. Keep controller reference units in `km/h`; do not divide V3 profile values by `3.6`.
 4. Do not modify estimator logic or frozen parameters, including `QI=0.002`, `kA=30`, `kH=18`, `QW=0.0001`, `Rw=0.393`, `Ts_est=0.01 s`, and `Ts_sim=0.001 s`.
