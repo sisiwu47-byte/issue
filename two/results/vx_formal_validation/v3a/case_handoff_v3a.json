@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "VX_FORMAL_CASE_HANDOFF_V3A_1",
+  "stage": "VX-V3A-DS",
+  "basisStatus": "docs/STAGE_VX_V3_FORMAL_RUNTIME_STATUS.md",
+  "amendment": "results/vx_formal_validation/v3a/VX_FORMAL_CASE_AMENDMENT_V3A.md",
+  "runtimeContract": "results/vx_formal_validation/v3a/runtime_contract_v3a.md",
+  "existingFormalRuntimeCountCommitted": 5,
+  "existingAcceptedResults": ["VX-ND", "VX-ST", "VX-DR"],
+  "doNotRerun": ["VX-ND", "VX-ST", "VX-DR"],
+  "authorizedNewCase": "VX-DS",
+  "vxBlAuthorized": false,
+  "reason": "Current V3 demonstrated reproducible rear drive slip under A20b-MU03 acceleration, while the braking phase produced 0/0 s rear braking-degradation duration and historical G has no traceable braking-control lineage.",
+  "modelPath": "model/vx.slx",
+  "modelSha256": "7D01E24D44903C836B4738FBAC480ED039B2188C3C96C4B3218274446F50D516",
+  "estimatorPath": "model/longitudinal_velocity_estimator.m",
+  "estimatorSha256": "68AF9BEABFC44FDFC477E0E3F2296117BB57634C8B45223450C4DB0A1B8E8107",
+  "parameterPath": "model/estimator_default_params.m",
+  "parameterSha256": "09B10F2848798785E14D5B370AB02ED23FDEF93BF9F7801BF496142C94CF9DE4",
+  "wrapperPath": "model/longitudinal_velocity_estimator_simulink.m",
+  "wrapperSha256": "93B95A0DF538DB04D66258CC09C8AC852C5154D06030A5BEB08799DAB6113061",
+  "referenceUnit": "km/h",
+  "profile": {
+    "caseId": "VX-DS",
+    "time_s": [0, 3, 8, 16],
+    "speed_kmh": [40, 40, 70, 70],
+    "steering": "ZERO",
+    "windows_s": {
+      "overall": [0.6, 16.0],
+      "baseline": [0.6, 3.0],
+      "degradation": [3.0, 8.0],
+      "recovery": [8.0, 16.0]
+    }
+  },
+  "lowMuControl": {
+    "sourceDirectory": "results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03",
+    "runAllSha256": "8C6B8519CF60167A06FB88DE015142F344F062302EEF870BE9B8B4943C7035D8",
+    "simfileSha256": "D090D80F3DE31276BE2D4B2FD650EB7A3BFB3507D06BCAAA4BF3D6881ADAAE3A",
+    "muRoadConstant": 0.30
+  },
+  "physicalGate": {
+    "definition": "kappa_i=(0.393*omega_i-Vx_true)/max(abs(Vx_true),1)",
+    "affectedWheels": ["RL", "RR"],
+    "threshold": 0.10,
+    "minimumSustained_s": 0.10,
+    "window_s": [3.0, 8.0]
+  },
+  "reuseExistingCode": {
+    "configurationTemplate": "matlab/configure_vx_formal_case_v3.m",
+    "runnerTemplate": "matlab/run_vx_formal_validation_v3.m",
+    "analyzerTemplate": "matlab/analyze_vx_formal_validation_v3.m",
+    "fig01": "results/vx_formal_validation/v3/thesis_figures/plot_vx_v3_fig01.m"
+  },
+  "createFiles": [
+    "matlab/configure_vx_formal_case_v3a.m",
+    "matlab/run_vx_formal_validation_v3a.m",
+    "matlab/analyze_vx_formal_validation_v3a.m",
+    "results/vx_formal_validation/v3a/thesis_figures/plot_vx_v3a_fig02.m",
+    "docs/STAGE_VX_V3A_DS_FORMAL_VALIDATION_STATUS.md"
+  ],
+  "outputRoot": "results/vx_formal_validation/v3a",
+  "manualGuiExpected": false
+}
