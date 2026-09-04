@@ -1,0 +1,17 @@
+{
+  "profileId": "A20-C1-DLC-LIKE-FOUR-HALF-SINES",
+  "status": "REUSABLE_STEERING_PROFILE_AND_CONTROL_LINEAGE",
+  "sourceStage": "V2.8-A20-C1",
+  "confirmedReuseStage": "V2.8-A24-N1",
+  "sourceFunction": "matlab/run_vy_lifesig_fusion_v2_8a20_condition.m::condition_profile/dlc_profile",
+  "confirmationFunction": "matlab/run_vy_lifesig_fusion_v2_8a24_n1_diagnostic.m::c1_profile/dlc",
+  "sampleTime_s": 0.01,
+  "nativeSegmentEdges_s": [0.0, 1.1, 2.3, 3.6, 5.0],
+  "signedPeaks_rad": [0.025, -0.025, 0.022, -0.022],
+  "formula": "u(t)=peak[k]*sin(pi*(t-edge[k])/(edge[k+1]-edge[k])) within segment k; zero otherwise",
+  "v3ActiveWindow_s": [3.0, 8.0],
+  "v3TimeShift_s": 3.0,
+  "outsideValue_rad": 0.0,
+  "referenceSpeed_kmh": 72.0,
+  "claimBoundary": "Profile/control reuse is established; genuine rear steering remains a runtime physical gate."
+}
