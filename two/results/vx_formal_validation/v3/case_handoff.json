@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "VX_FORMAL_CASE_HANDOFF_V3_1",
+  "stage": "VX-V2B",
+  "repositoryPath": "D:/UsersData/桌面/two",
+  "modelPath": "model/vx.slx",
+  "modelSha256": "7D01E24D44903C836B4738FBAC480ED039B2188C3C96C4B3218274446F50D516",
+  "estimatorPath": "model/longitudinal_velocity_estimator.m",
+  "estimatorSha256": "68AF9BEABFC44FDFC477E0E3F2296117BB57634C8B45223450C4DB0A1B8E8107",
+  "parameterPath": "model/estimator_default_params.m",
+  "parameterSha256": "09B10F2848798785E14D5B370AB02ED23FDEF93BF9F7801BF496142C94CF9DE4",
+  "wrapperPath": "model/longitudinal_velocity_estimator_simulink.m",
+  "wrapperSha256": "93B95A0DF538DB04D66258CC09C8AC852C5154D06030A5BEB08799DAB6113061",
+  "formalRuntimeCount": 0,
+  "simulinkCasesScriptable": true,
+  "manualGuiActionCount": 0,
+  "readyForVxV3Configuration": true,
+  "referenceUnit": "km/h",
+  "doNotDivideReferenceBy3p6": true,
+  "caseIds": {
+    "primary": ["VX-ND", "VX-ST", "VX-DR"],
+    "fallback": ["VX-DS", "VX-BL"]
+  },
+  "reuseAudit": {
+    "VX-ND": "A20-C1 nominal headless CarSim control plus current vx.cpar identity cross-check",
+    "VX-ST": "A20-C1 DLC-like profile/control; A24-N1 exact reuse confirmation",
+    "VX-DR": "A20b MU03 headless CarSim control; F/G behavior templates only",
+    "F_G": "HISTORICAL_BEHAVIOR_TEMPLATE_ONLY_NOT_REUSABLE_FORMAL_CONFIGURATION",
+    "A20_C1_A24_N1": "PROFILE_AND_CONTROL_REUSABLE_RESULTS_NOT_REUSABLE_AS_VX_FORMAL_EVIDENCE"
+  },
+  "profiles": {
+    "VX-ND": {
+      "time_s": [0, 3, 7, 9, 13, 16],
+      "speed_kmh": [60, 60, 100, 100, 60, 60],
+      "steering": "ZERO",
+      "windows_s": {
+        "overall": [0.6, 16.0],
+        "baseline": [0.6, 3.0],
+        "acceleration": [3.0, 7.0],
+        "highSpeedPlateau": [7.0, 9.0],
+        "braking": [9.0, 13.0],
+        "finalPlateau": [13.0, 16.0]
+      }
+    },
+    "VX-ST": {
+      "time_s": [0, 16],
+      "speed_kmh": [72, 72],
+      "steeringProfileFile": "results/vx_formal_validation/v3/vx_st_profile_a20_c1.json",
+      "steeringActiveWindow_s": [3.0, 8.0],
+      "windows_s": {
+        "overall": [0.6, 16.0],
+        "baseline": [0.6, 3.0],
+        "steering": [3.0, 8.0],
+        "recovery": [8.0, 16.0]
+      }
+    },
+    "VX-DR": {
+      "time_s": [0, 3, 7, 9, 13, 16],
+      "speed_kmh": [40, 40, 70, 70, 40, 40],
+      "steering": "ZERO",
+      "windows_s": {
+        "overall": [0.6, 16.0],
+        "baseline": [0.6, 3.0],
+        "accelDegradation": [3.0, 7.0],
+        "accelRecovery": [7.0, 9.0],
+        "brakeDegradation": [9.0, 13.0],
+        "brakeRecovery": [13.0, 16.0]
+      }
+    }
+  },
+  "carsim": {
+    "runDatasetId": "Run_d05bfc0b-97ca-48c5-b21f-3525f5950963",
+    "vehicleDatasetId": "Vehicle_1948dce2-4b34-42aa-8c90-ff8a11ae7f14",
+    "vehicleDatasetName": "C-Class, Electric source",
+    "steeringDatasetId": "StrSys2_460503eb-d669-441b-a769-41e4a541887d",
+    "steeringDatasetName": "C-Class, 4WS",
+    "roadDatasetId": "Road_014f1dcf-7ba1-4901-b58f-2eee953737d4",
+    "roadDatasetName": "casadi0",
+    "frictionDatasetId": "RdMu_d71e1177-4da5-4b2d-ad7d-decb01c69ad9",
+    "frictionDatasetDisplayName": "0.35",
+    "roadCombineMode": "MULTIPLY",
+    "powertrainDatasetId": "4WD_32c72a7a-c260-4794-8d2a-5f755cb8e0df",
+    "powertrainDatasetName": "150 kW, 6-spd., 4.1 Ratio #1",
+    "brakeDatasetId": "Brk4W_24c07e14-cfc1-49a5-9b66-5d900c8e18e4",
+    "brakeDatasetName": "C-Class (Hbk): MC Press, No ABS",
+    "absEnabled": false,
+    "nominalControl": {
+      "sourceDirectory": "results/vy_lifesig_v2_8a20_limited_cross_condition/carsim_control_C1",
+      "runAllSha256": "1E3F016EEB9D79AA06A013A359C74B32AC94550F07145DA93ED1C698F9AA4BBB",
+      "simfileSha256": "D090D80F3DE31276BE2D4B2FD650EB7A3BFB3507D06BCAAA4BF3D6881ADAAE3A",
+      "muRoadConstant": 0.8
+    },
+    "lowMuControl": {
+      "sourceDirectory": "results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03",
+      "runAllSha256": "8C6B8519CF60167A06FB88DE015142F344F062302EEF870BE9B8B4943C7035D8",
+      "simfileSha256": "D090D80F3DE31276BE2D4B2FD650EB7A3BFB3507D06BCAAA4BF3D6881ADAAE3A",
+      "muRoadConstant": 0.3
+    },
+    "muProvenanceBoundary": "Dataset IDs and scalar tokens are resolved; an independently measured effective tire-road coefficient is not identified from configuration files alone."
+  },
+  "steeringSourceProvenance": {
+    "status": "REUSABLE_STEERING_PROFILE_AND_CONTROL_LINEAGE",
+    "source": "A20-C1",
+    "confirmation": "A24-N1",
+    "nativeEdges_s": [0, 1.1, 2.3, 3.6, 5.0],
+    "signedPeaks_rad": [0.025, -0.025, 0.022, -0.022],
+    "v3Shift_s": 3.0,
+    "genuineRearSteering": "NOT_VALIDATED_UNTIL_RUNTIME"
+  },
+  "requiredRuntimeSignals": {
+    "Vx_true_log": "CarSim Vx reference",
+    "est_u_log": "N-by-18; omega FL/FR/RL/RR=1:4, actual delta FL/FR/RL/RR=5:8, Ax=9, AVz=14",
+    "est_y_log": "N-by-38 current output contract; Fusion=1, WSS=3, IMU=5, rho=16:19, validWheel=24:27, alpha=30:31, updated=35, counter=38",
+    "vx_v3_steer_command_log": "applied steering command in rad"
+  },
+  "physicalGates": {
+    "VX-ST": "Actual delta_RL and delta_RR must demonstrate dynamic rear steering before any 4WIS rear-steering claim.",
+    "VX-DR-ACCEL": "RL and RR each sustain kappa>=0.10 for >=0.10 s in [3,7).",
+    "VX-DR-BRAKE": "RL and RR each sustain kappa<=-0.10 for >=0.10 s in [9,13).",
+    "fallbackRule": "Only one completed VX-DR physical-gate failure permits VX-DS/VX-BL; estimator metrics cannot trigger fallback."
+  },
+  "outputMatPaths": {
+    "VX-ND": "results/vx_formal_validation/v3/runtime/VX_ND_formal_raw.mat",
+    "VX-ST": "results/vx_formal_validation/v3/runtime/VX_ST_formal_raw.mat",
+    "VX-DR": "results/vx_formal_validation/v3/runtime/VX_DR_formal_raw.mat",
+    "VX-DS": "results/vx_formal_validation/v3/runtime/VX_DS_formal_raw.mat",
+    "VX-BL": "results/vx_formal_validation/v3/runtime/VX_BL_formal_raw.mat"
+  },
+  "plottingCodePaths": {
+    "VX-FIG-01": "results/vx_formal_validation/v3/thesis_figures/plot_vx_v3_fig01.m",
+    "VX-FIG-02": "results/vx_formal_validation/v3/thesis_figures/plot_vx_v3_fig02.m"
+  },
+  "unresolvedGuiFields": [],
+  "unresolvedRuntimeFields": [
+    "VX-ST actual rear-steering response",
+    "VX-DR acceleration physical gate",
+    "VX-DR braking physical gate",
+    "independently identified effective tire-road coefficient"
+  ]
+}
