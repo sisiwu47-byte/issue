@@ -27,7 +27,7 @@ wrapperFile = fullfile(root, 'model', 'longitudinal_velocity_estimator_simulink.
 
 frozen = struct( ...
     'model', '7D01E24D44903C836B4738FBAC480ED039B2188C3C96C4B3218274446F50D516', ...
-    'estimator', '68AF9BEABFC44FDFC477E0E3F2296117BB57634C8B45223450C4DB0A1B8E8107', ...
+    'estimator', '68AF9BEABFC477E0E3F2296117BB57634C8B45223450C4DB0A1B8E8107', ...
     'parameter', '09B10F2848798785E14D5B370AB02ED23FDEF93BF9F7801BF496142C94CF9DE4', ...
     'wrapper', '93B95A0DF538DB04D66258CC09C8AC852C5154D06030A5BEB08799DAB6113061');
 assert(strcmp(sha256_file(sourceModel), frozen.model), ...
@@ -69,6 +69,7 @@ steerProfile = steering_profile(caseId);
 steerSource = replace_steering_source(caseModelName, steerSource, ...
     caseId == "VX-ST");
 add_steering_log(caseModelName, steerSource);
+disable_unused_duplicate_wheel_tags(caseModelName);
 
 [controlSource, expectedMu, sourceHashes] = control_source(root, caseId);
 copyfile(fullfile(controlSource, 'simfile.sim'), ...
@@ -200,6 +201,26 @@ srcPorts = get_param(sourceBlock, 'PortHandles');
 logPorts = get_param(logBlock, 'PortHandles');
 add_line(modelName, srcPorts.Outport(1), logPorts.Inport(1), ...
     'autorouting', 'on');
+end
+
+function disable_unused_duplicate_wheel_tags(modelName)
+% The frozen source model contains two global Goto sets named R_FL/R_FR/
+% R_RL/R_RR. No From block consumes these tags, but Simulink rejects the
+% duplicate globals at compile time. Disable only the second unused set in
+% the generated validation copy; the source model and estimator are intact.
+blocks = {'Goto72','Goto73','Goto74','Goto75'};
+tags = {'R_FL','R_FR','R_RL','R_RR'};
+allFrom = find_system(modelName,'LookUnderMasks','all','FollowLinks','on', ...
+    'BlockType','From');
+for k=1:4
+    b=[modelName '/' blocks{k}];
+    assert(getSimulinkBlockHandle(b)~=-1 && strcmp(get_param(b,'GotoTag'),tags{k}), ...
+        'VX:V3:DuplicateTagAudit','Expected duplicate wheel tag is missing.');
+    consumers=allFrom(cellfun(@(x)strcmp(get_param(x,'GotoTag'),tags{k}),allFrom));
+    assert(isempty(consumers),'VX:V3:DuplicateTagUsed', ...
+        'Cannot disable duplicate %s because a From consumer exists.',tags{k});
+    set_param(b,'Commented','on');
+end
 end
 
 function [sourceDir, mu, hashes] = control_source(root, caseId)
