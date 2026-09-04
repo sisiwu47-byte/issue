@@ -1,137 +1,120 @@
-# VX V3 Codex Execution Entry — CURRENT
+# VX V3 Codex Execution Entry — FALLBACK CONFIGURATION
 
-本文件是下一阶段唯一执行入口。不要重新扫描项目，不要复述已有 status/evidence，不要重新设计工况。
+本文件是下一阶段唯一执行入口。不要重新扫描项目，不要重跑已完成的 VX-ND/VX-ST/VX-DR，不要复述已有 evidence。
 
 ## 只读这些
 
-先读：
 1. `AGENTS.md`
 2. 本文件
-3. `results/vx_formal_validation/v3/case_handoff.json`
-4. `results/vx_formal_validation/v3/runtime_contract.md`
-5. `matlab/configure_vx_formal_case_v3.m`
-6. `results/vx_formal_validation/v3/thesis_figures/plot_vx_v3_fig01.m`
+3. `docs/STAGE_VX_V3_FORMAL_RUNTIME_STATUS.md`
+4. `results/vx_formal_validation/v3/VX_FORMAL_CASE_MANIFEST_V3.md`
+5. `results/vx_formal_validation/v3/runtime_contract.md`
+6. `matlab/configure_vx_formal_case_v3.m`
+7. `matlab/run_vx_formal_validation_v3.m`
+8. `matlab/analyze_vx_formal_validation_v3.m`
 
-`VX_FORMAL_CASE_MANIFEST_V3.md` 仅在 VX-DR 物理门失败、需要确认 fallback 预注册信息时再读。
+只有为定位历史 G 型制动激励来源时，才允许定向读取与 `results_case_G` / historical-G-like brake/lock 直接相关的脚本或配置；禁止全仓扫描。
 
-## 当前已闭合
+## 当前冻结事实
 
-- `FORMAL_RUNTIME_COUNT = 0`
-- `matlab/configure_vx_formal_case_v3.m` 已存在；不要重写，除非实际执行发现纯执行层 bug。
-- 主工况固定：`VX-ND -> VX-ST -> VX-DR`
-- 冻结算法/参数、`model/*.slx`、CarSim 源数据集不得修改。
-- 速度参考单位为 `km/h`，不要再除以 `3.6`。
-- GUI setup = `NO`；禁止自动 GUI。
+- `FORMAL_RUNTIME_COUNT = 5` committed；accepted raw results = `3`。
+- `VX-ND = COMPLETE`，不得重跑。
+- `VX-ST = COMPLETE`，rear-steering gate FAIL；claim ceiling = `STEERING_DYNAMIC_VALIDATION`，不得重跑。
+- `VX-DR = COMPLETE / PHYSICAL_GATE_FAIL`，不得重跑。
+- VX-DR acceleration gate PASS：RL/RR sustained `1.906/1.906 s`，mean alpha_W `0.096373`。
+- VX-DR braking gate FAIL：RL/RR sustained `0/0 s`，`NOT_DETECTED`。
+- 因为只有 braking gate 失败，`VX-DS` 不需要配置或运行。
+- 下一步唯一授权 fallback：`VX-BL`。
+- 冻结估计算法、参数、`model/*.slx`、CarSim 源数据集不得修改；禁止自动 GUI。
 
-## 第一门：本地依赖预检（先做，避免浪费 token）
+## 本阶段目标
 
-只检查以下 4 个本地文件是否存在；GitHub 当前未镜像这些 CarSim control 源文件，因此“GitHub不存在”不算阻塞：
+只完成 `VX-BL` 的可追溯 fallback 配置；配置闭合后若能无 GUI、无冻结资产修改地执行，则允许执行 **恰好一次** VX-BL formal runtime，并完成分析/表图更新。
 
-- `results/vy_lifesig_v2_8a20_limited_cross_condition/carsim_control_C1/simfile.sim`
-- `results/vy_lifesig_v2_8a20_limited_cross_condition/carsim_control_C1/Run_all.par`
-- `results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03/simfile.sim`
-- `results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03/Run_all.par`
+不要为了得到 PASS 改 estimator、门槛、窗口、轮胎半径或分析公式。
 
-若本地也缺失，立即停止，输出 `VX_V3_LOCAL_CONTROL_SOURCE_MISSING` + 缺失路径；不要从历史 MAT 重建，不要搜索整个仓库。
+## VX-BL 预注册定义
 
-若存在，直接执行配置预检：
+- speed reference: `70 -> 40 km/h`
+- `[0,3) s`: 70 km/h baseline
+- `[3,8) s`: 70 -> 40 km/h smooth braking ramp
+- `[8,16] s`: 40 km/h recovery plateau
+- steering: zero
+- low-mu control: `MU_ROAD_CONSTANT = 0.30`
+- physical gate: RL/RR each sustain `kappa <= -0.10` for at least `0.10 s` inside `[3,8)`
+- `kappa_i = (0.393*omega_i - Vx_true)/max(abs(Vx_true),1)`
+- fixed windows: baseline `[0.60,3)`; brake-lock `[3,8)`; recovery `[8,16]`
 
-```matlab
-addpath(fullfile(pwd,'matlab'));
-[~,cND] = configure_vx_formal_case_v3("VX-ND");
-[~,cST] = configure_vx_formal_case_v3("VX-ST");
-[~,cDR] = configure_vx_formal_case_v3("VX-DR");
-```
+## 先做最小 fallback provenance audit
 
-配置脚本自身会校验冻结 source/control SHA-256。哈希不匹配时不要改冻结哈希，直接报告阻塞。
+VX-DR 已证明“仅把 mu=0.30 + 70->40 指令放入组合工况”没有形成后轮制动退化。因此不要直接盲跑 VX-BL。
 
-## 需要创建的执行层文件
+只定向检查历史 G 相关本地资产，回答一个问题：
 
-仅创建/修改允许路径：
+`是否存在可追溯、可复制到 validation copy 的 historical-G-like 制动/后轮锁定激励配置？`
 
-- `matlab/run_vx_formal_validation_v3.m`
-- `matlab/analyze_vx_formal_validation_v3.m`
-- `results/vx_formal_validation/v3/thesis_figures/plot_vx_v3_fig02.m`
-- `results/vx_formal_validation/v3/thesis_figure_manifest.md`
-- `docs/STAGE_VX_V3_FORMAL_RUNTIME_STATUS.md`
+允许检查：
+- `tests/results_case_G.mat` 的 metadata/字段名，不把结果当 formal evidence；
+- 明确引用 G / lock / brake / rear-wheel braking 的现有验证脚本；
+- 与这些脚本直接引用的本地 CarSim/Simulink control/config 文件。
 
-如 configurator 仅有执行性问题，可最小修改 `matlab/configure_vx_formal_case_v3.m`；不得改变预注册 profile、物理门、冻结参数或源模型。
+禁止：
+- 从 G 的结果曲线反推并伪造控制输入；
+- 修改源 CarSim dataset；
+- 修改 `model/vx.slx`；
+- 为寻找更强制动而大范围试参。
 
-## Runner 最小合同
+若找不到可追溯制动激励来源：停止并输出 `VX_BL_CONFIGURATION_BLOCKED_NO_TRACEABLE_BRAKE_SOURCE`。如果唯一缺口确实只能 GUI 完成，输出 `MANUAL_GUI_ACTION_REQUIRED` + 最少步骤。
 
-`run_vx_formal_validation_v3(caseId)` 只支持 `VX-ND/ST/DR`，并必须：
+## 若 provenance 闭合，最小修改执行层
 
-1. 调用 configurator，使用其 `cfg.generatedModel` 和 `cfg.runtimeWorkingDirectory`；
-2. 用完整路径 `load_system(cfg.generatedModel)`；
-3. `sim` 前切换到 `cfg.runtimeWorkingDirectory`，用 `onCleanup` 保证恢复原目录；不要假设 CarSim 会从仓库根目录找到 `simfile.sim`；
-4. `sim` 前写 case-specific provenance，包含 `SIM_INVOCATION_COMMITTED=YES`、case、时间、profile、source/generated hashes；
-5. 只调用一次正式 `sim(simIn)`；
-6. 从 `SimulationOutput` 直接取得 `Vx_true_log`、`est_u_log`、`est_y_log`、`vx_v3_steer_command_log`；缺信号就报错，不得离线伪造；
-7. 对齐到估计器时间轴并保存 scalar `R`：
-   - `R.metadata.formalRuntime=true`
-   - `R.metadata.caseId`
-   - `R.time`
-   - `R.vxTrue`
-   - `R.estU` (N×18)
-   - `R.estY` (N×38)
-   - `R.Ax = R.estU(:,9)`
-   - `R.steerCommand`
-   - `R.configuration=cfg`
-8. 保存 `runtime/<CASE>_formal_raw.mat`、metadata JSON、简短 log、post-run hashes；
-9. 立即调用 analyzer，确认该 case 数据完整后再进入下一个主工况。
+只在允许路径中最小扩展现有代码：
 
-不要用 A-H/Vy 结果替代 V3 runtime。
+1. `matlab/configure_vx_formal_case_v3.m`
+   - 新增 `VX-BL`；
+   - 保留现有 ND/ST/DR 行为不变；
+   - 使用上面的固定速度 profile、zero steering、mu=0.30；
+   - 仅把已审计的 historical-G-like braking excitation 复制/应用到 **generated validation copy**；
+   - 不保存源模型/源 CarSim dataset。
 
-## Analyzer 最小合同
+2. `matlab/run_vx_formal_validation_v3.m`
+   - 仅新增 VX-BL case 支持；
+   - 保持 provenance、hash、工作目录、raw R 结构不变；
+   - 只允许一次新的 VX-BL formal `sim` invocation。
 
-严格使用 `runtime_contract.md` 的固定窗口/指标：
+3. `matlab/analyze_vx_formal_validation_v3.m`
+   - 仅新增 VX-BL 固定窗口/物理门/退化恢复指标；
+   - 不改变已有 ND/ST/DR 结果。
 
-- 所有主工况：WSS/IMU/Fusion 的 RMSE、MAE、MaxAbs、Bias；论文 TABLE-01 保留 WSS/IMU/Fusion RMSE + Fusion MAE/MaxAbs。
-- `VX-ST`：从 `R.estU(:,5:8)` 检查实际四轮转角；只有 RL/RR 有真实动态响应时才标记 `4WIS_REAR_STEERING_VALIDATION`，否则最高只能 `STEERING_DYNAMIC_VALIDATION`。
-- `VX-DR`：用 `Rw=0.393`、`R.estU(:,1:4)` 和 `R.vxTrue` 计算 kappa；加速 `[3,7)` 与制动 `[9,13)` 分别执行预注册持续 0.10 s 物理门，并计算退化/恢复指标形成 TABLE-02。
-- 未达到事件必须写 `NOT_DETECTED` / `NOT_REACHED`，不得用窗口末端代替。
+## VX-BL runtime 后判定
 
-## Fallback 边界
+若 braking physical gate PASS：
+- `VX-BL = COMPLETE / PHYSICAL_GATE_PASS`
+- 使用 VX-BL 的 braking/recovery 行替换 TABLE-02 中失败的 VX-DR BRAKE 行；VX-DR ACCEL 行继续保留。
+- FIG-02 不再要求“VX-DR 两个 gate 同时 PASS”；改为基于正式证据组合展示：drive-slip 机制来自 VX-DR acceleration，brake-lock 机制来自 VX-BL。若单图无法清楚呈现两个 source case，则保持 FIG-02 为 drive-slip/recovery 主图，并把 VX-BL 作为表格/补充证据，不强行拼图。
+- 更新 thesis figure manifest 和 status。
 
-当前 configurator 明确只支持 `VX-ND/ST/DR`。因此本阶段**不要运行 `VX-DS/BL`**。
+若 VX-BL physical gate FAIL：
+- 保存真实正式证据；
+- 不重跑、不调门槛、不调估计器；
+- verdict = `VX_BL_PHYSICAL_GATE_FAIL`
+- `READY_FOR_VX_FINAL_ACCEPTANCE = NO`
 
-- VX-DR 两个物理门都 PASS：fallback = `NOT_REQUIRED`。
-- 任一物理门 FAIL：保存完整 DR 正式证据，状态写 `VX_DR_PHYSICAL_GATE_FAIL` 和 `READY_FOR_VX_FALLBACK_CONFIGURATION=YES`，然后停止；不要自行扩展 configurator 或重跑更“好看”的 DR。
+## FIG-01
 
-## 图表输出
-
-接受的正式 runtime 后生成：
-
-- `runtime/VX_TABLE_01_representative_condition_performance.csv`
-- `runtime/VX_TABLE_02_degradation_recovery_dynamics.csv`
-- `thesis_figures/VX_FIG01_normal_dynamic_estimation.{png,pdf,svg}`
-- `thesis_figures/VX_FIG02_degradation_recovery_fusion.{png,pdf,svg}`（仅当 DR 对应物理门允许机制展示）
-
-每张图必须保留对应 `.m`。绘图脚本头部和 `thesis_figure_manifest.md` 必须写明 figure ID、source case/result、scientific question、status；成功从正式 MAT 生成后把 `GENERATED_FROM_FORMAL_RUNTIME` 标为 `YES`。
-
-FIG-01 已存在，不要重写版式，只让 runner 的 `R` 结构与其输入合同一致。FIG-02 建议 3 行：Vx True/WSS/IMU/Fusion；rho_RL/rho_RR；alpha_W/alpha_I。
-
-## 执行顺序
-
-依赖预检 PASS -> 配置预检 PASS -> 创建 runner/analyzer/FIG-02 -> `VX-ND` -> `VX-ST` -> `VX-DR` -> 表/图/status。
-
-ND/ST 接受后不要等待用户确认。只有真正 GUI-only 阻塞时输出：
-
-`MANUAL_GUI_ACTION_REQUIRED`
-
-并给最少人工步骤；禁止自动 GUI。
+ND 已 accepted。FIG-01 现在可以直接从 `VX_ND_formal_raw.mat` 生成，不受 DR braking gate 失败影响。若绘图执行环境可用，本阶段应生成 FIG-01 PNG/PDF/SVG，并把脚本头部 `GENERATED_FROM_FORMAL_RUNTIME` 更新为 `YES`。
 
 ## 最终回复 <=20 行
 
 只报告：
 1. verdict
 2. FORMAL_RUNTIME_COUNT
-3. ND/ST/DR 状态
-4. ST rear-steering gate
-5. DR accel/brake gates
-6. 3-8 个关键指标
-7. fallback = NOT_REQUIRED / NEEDS_CONFIGURATION
-8. TABLE-01/TABLE-02 路径
-9. FIG-01/FIG-02 图片+代码路径
+3. VX-BL provenance source
+4. VX-BL configuration status
+5. 若运行：braking physical gate + sustained durations
+6. 3-6 个关键指标
+7. TABLE-02 更新状态
+8. FIG-01 状态
+9. FIG-02 状态
 10. blocker（若有）
 11. `READY_FOR_VX_FINAL_ACCEPTANCE = YES/NO`
