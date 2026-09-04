@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "VX_FORMAL_CASE_HANDOFF_V3B_1",
+  "stage": "VX-V3B",
+  "supersedesExecutionPlan": "VX-V3A",
+  "preserveV3Evidence": true,
+  "formalRuntimeCountBeforeV3B": 5,
+  "acceptedV3RawResults": 3,
+  "newFormalCaseId": "VX-CS",
+  "referenceUnit": "km/h",
+  "sourceModel": "model/vx.slx",
+  "sourceModelSha256": "7D01E24D44903C836B4738FBAC480ED039B2188C3C96C4B3218274446F50D516",
+  "estimatorSha256": "68AF9BEABFC44FDFC477E0E3F2296117BB57634C8B45223450C4DB0A1B8E8107",
+  "parameterSha256": "09B10F2848798785E14D5B370AB02ED23FDEF93BF9F7801BF496142C94CF9DE4",
+  "wrapperSha256": "93B95A0DF538DB04D66258CC09C8AC852C5154D06030A5BEB08799DAB6113061",
+  "lowMuControl": {
+    "sourceDirectory": "results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03",
+    "runAllSha256": "8C6B8519CF60167A06FB88DE015142F344F062302EEF870BE9B8B4943C7035D8",
+    "simfileSha256": "D090D80F3DE31276BE2D4B2FD650EB7A3BFB3507D06BCAAA4BF3D6881ADAAE3A",
+    "muRoadConstant": 0.30
+  },
+  "baseProfile": {
+    "speedTimePrefix_s": [0,3,7,9],
+    "speedPrefix_kmh": [40,40,70,70],
+    "steering": 0,
+    "stopTime_s": 16
+  },
+  "tier1BrakeRampCandidates_s": [2.5,2.0,1.5],
+  "tier1Rule": "Try in listed order and stop at first physical-gate pass; estimator metrics are forbidden for candidate selection.",
+  "tier2": {
+    "allowedOnlyIfAllTier1Fail": true,
+    "historicalGLockWindow_s": [4.709,9.175],
+    "controllerQmax_Nm": 1600,
+    "rearBrakeMagnitudeCandidates_Nm": [800,1200,1600],
+    "rule": "Only after statically proving an unambiguous signed RL/RR torque command route in the generated validation copy; negative signed torque; clamp absolute wheel command to 1600 Nm; stop at first physical-gate pass."
+  },
+  "physicalGate": {
+    "Rw_m": 0.393,
+    "driveWindow_s": [3,7],
+    "driveThreshold": 0.10,
+    "brakeStart_s": 9,
+    "brakeThreshold": -0.10,
+    "minimumSustained_s": 0.10,
+    "requiredWheels": ["RL","RR"]
+  },
+  "calibrationEvidenceAllowed": [
+    "raw CarSim Vx",
+    "raw four wheel speeds",
+    "applied speed profile",
+    "applied physical brake/torque command when Tier2 is used",
+    "numerical completion status"
+  ],
+  "calibrationEvidenceForbiddenForSelection": [
+    "Fusion RMSE",
+    "WSS RMSE",
+    "IMU RMSE",
+    "rho",
+    "validWheel",
+    "alpha_W",
+    "alpha_I",
+    "figure appearance"
+  ],
+  "freezeFile": "results/vx_formal_validation/v3b/frozen_physical_excitation.json",
+  "formalRaw": "results/vx_formal_validation/v3b/runtime/VX_CS_formal_raw.mat",
+  "finalTable1": "results/vx_formal_validation/v3b/runtime/VX_TABLE_01_FINAL_representative_condition_performance.csv",
+  "finalTable2": "results/vx_formal_validation/v3b/runtime/VX_TABLE_02_FINAL_combined_slip_recovery.csv",
+  "fig2Code": "results/vx_formal_validation/v3b/thesis_figures/plot_vx_v3b_fig02.m",
+  "statusFile": "docs/STAGE_VX_V3B_COMBINED_SLIP_STATUS.md"
+}
