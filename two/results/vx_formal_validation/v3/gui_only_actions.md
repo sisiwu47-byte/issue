@@ -2,7 +2,7 @@
 
 `MANUAL_GUI_ACTION_COUNT = 0`
 
-The static audit located case-control files, road/vehicle/run identities, the A20-C1 steering definition, the active speed-reference block, and the current CarSim input path. `model/configure_vx_formal_case_v3.m` creates case-specific validation copies and control directories without saving changes to `model/vx.slx`.
+The static audit located case-control files, road/vehicle/run identities, the A20-C1 steering definition, the active speed-reference block, and the current CarSim input path. `matlab/configure_vx_formal_case_v3.m` creates case-specific validation copies and control directories without saving changes to `model/vx.slx`.
 
 The following are runtime physical gates, not GUI setup actions:
 
