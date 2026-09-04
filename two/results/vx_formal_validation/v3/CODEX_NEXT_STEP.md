@@ -1,22 +1,21 @@
-# VX V3 Codex Execution Entry — SUPERSEDED BY V3A
+# VX V3 Codex Execution Entry — SUPERSEDED BY V3B
 
-Do not execute the former VX-BL fallback plan.
+Do not rerun the completed V3 primary cases.
 
-The completed V3 runtime established:
+Permanent V3 evidence remains:
 
-- VX-DR acceleration physical gate = PASS;
-- VX-DR braking physical gate = FAIL;
-- the reusable A20b-MU03 control is empirically supported for rear drive-slip under acceleration;
-- no traceable current configuration establishes that the same control plus `70 -> 40 km/h` will produce rear brake lock.
+- VX-ND complete;
+- VX-ST complete, claim ceiling `STEERING_DYNAMIC_VALIDATION`;
+- VX-DR complete with acceleration physical gate PASS and braking physical gate FAIL.
 
-The thesis validation scope has therefore been amended without rewriting the original V3 preregistration.
+V3A's drive-slip-only plan is also superseded before any V3A formal runtime.
 
 Current execution entry:
 
-`results/vx_formal_validation/v3a/CODEX_NEXT_STEP.md`
+`results/vx_formal_validation/v3b/CODEX_NEXT_STEP.md`
 
 Read and execute that file only.
 
-Do not rerun `VX-ND`, `VX-ST`, or `VX-DR`.
-Do not configure or run `VX-BL` in V3A.
-The only newly authorized formal case is `VX-DS`.
+The new authorized objective is one reproducible low-mu combined-slip case (`VX-CS`) containing both rear drive slip and rear brake slip, with physical-excitation calibration separated from the later single formal estimator runtime.
+
+Do not modify or overwrite V3 raw evidence.
