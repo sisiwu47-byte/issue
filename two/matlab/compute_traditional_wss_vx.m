@@ -35,6 +35,17 @@ switch caseId
             'VX:TraditionalWSS:V4CProfile');
         outputStem='VX_CS40';referenceInitialKmh=40;muRoad=0.30;
         speedTime=[0;3;6;9;11.5;16];speedKmh=[40;40;70;70;40;40];
+    case 'VX-ND60'
+        assert(strcmp(R.metadata.verdict,'VX_ND60_FORMAL_PASS')&& ...
+            R.metadata.initialStateGatePass&&R.metadata.estimatorFiniteGatePass, ...
+            'VX:TraditionalWSS:ND60FormalGate');
+        assert(abs(R.configuration.muRoadConstant-0.80)<1e-12&& ...
+            strcmp(R.configuration.referenceUnit,'km/h'),'VX:TraditionalWSS:ND60Configuration');
+        assert(isequal(R.configuration.speedTime_s(:),[0;3;7;9;13;16])&& ...
+            isequal(R.configuration.speed_kmh(:),[60;60;100;100;60;60]), ...
+            'VX:TraditionalWSS:ND60Profile');
+        outputStem='VX_ND60';referenceInitialKmh=60;muRoad=0.80;
+        speedTime=[0;3;7;9;13;16];speedKmh=[60;60;100;100;60;60];
     otherwise
         error('VX:TraditionalWSS:UnsupportedCase','Unsupported formal case %s.',caseId);
 end
@@ -101,6 +112,13 @@ if strcmp(caseId,'VX-CS40')
         'Fusion_RMSE_mps','TraditionalMinusFusion_RMSE_mps'});
     writetable(perf,fullfile(outDir,'VX_CS40_performance_metrics.csv'));
     writetable(phase,fullfile(outDir,'VX_CS40_phase_metrics.csv'));
+elseif strcmp(caseId,'VX-ND60')
+    D.stage='VX-V4-ND60-THESIS-DERIVED-BASELINE';
+    perf=table(["Traditional WSS";"Fusion";"Traditional minus Fusion"], ...
+        [traditional.RMSE;fusion.RMSE;traditional.RMSE-fusion.RMSE], ...
+        [traditional.MAE;fusion.MAE;NaN],[traditional.MaxAbs;fusion.MaxAbs;NaN], ...
+        'VariableNames',{'Estimator','RMSE_mps','MAE_mps','MaxAbs_mps'});
+    writetable(perf,fullfile(outDir,'VX_ND60_performance_metrics.csv'));
 else
     writetable(struct2table(M),fullfile(outDir,'VX_ND_traditional_wss_metrics.csv'));
 end
