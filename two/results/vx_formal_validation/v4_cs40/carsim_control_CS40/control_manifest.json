@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "VX_CS40_CONTROL_MANIFEST_V4_1",
+  "stage": "VX-V4-CS40",
+  "sourceCpar": "D:/UsersData/桌面/two/model/Yaw Control Diff., DLC w_ Low Mu.cpar",
+  "sourceCparSha256": "E01EEFBE320FB11FA6BA4C39A4AE877810B0F26A0D2C88B44A70F59721C41207",
+  "sourceRunDataset": "Run_60ed91d9-d198-4454-aa7a-bbf27fe3b517",
+  "sourceRunTitle": "Yaw Control Diff., DLC w/ Low Mu",
+  "sourceRunAllEntry": "Results/Run_60ed91d9-d198-4454-aa7a-bbf27fe3b517/Run_all.par",
+  "initialSpeedToken": "SV_VXS",
+  "initialSpeedValue": 40,
+  "initialSpeedUnit": "km/h",
+  "muRoadConstant": 0.30,
+  "stopTime_s": 16,
+  "runAllSha256": "4796D5256635D17A3275D40EA835A932050C82DF1898CA4CD5E63DEABC901F11",
+  "simfileSha256": "D090D80F3DE31276BE2D4B2FD650EB7A3BFB3507D06BCAAA4BF3D6881ADAAE3A",
+  "lineageComparedTo": "results/vy_lifesig_v2_8a20b_mu03_diagnostic/carsim_control_MU03/Run_all.par",
+  "vehicleRoadPowertrainBrakeProcedureLineageExactMatch": true,
+  "snapshotRule": "Run_all.par was extracted from the user-saved CS40 cpar; simfile.sim retains the proven MU03 headless solver interface."
+}
