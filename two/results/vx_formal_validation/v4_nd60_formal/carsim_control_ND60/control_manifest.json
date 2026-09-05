@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "stage": "VX-V4-ND60-FORMAL",
+  "sourceCpar": "D:/UsersData/桌面/two/model/zhi high Mu.cpar",
+  "sourceCparSha256": "532CFB0D3302E536F52494B5F1A9F799CE9EF79CCFA8D751C7D90B4851E071D1",
+  "sourceRunDataset": "Run_60ed91d9-d198-4454-aa7a-bbf27fe3b517",
+  "sourceRunAllEntry": "Results/Run_60ed91d9-d198-4454-aa7a-bbf27fe3b517/Run_all.par",
+  "initialSpeedToken": "SV_VXS",
+  "initialSpeedValue": 60,
+  "initialSpeedUnit": "km/h",
+  "muRoadConstant": 0.80,
+  "stopTime_s": 16,
+  "runAllSha256": "906531AB619DD011CBE2393F2F9368055EDD0E83B498329943710457FB0FAD22",
+  "simfileSha256": "3CE239A72D9141E8F5CD5DF92F950913210FE0CC732EC500C0D5EAE100E10C4D",
+  "snapshotRule": "Exact Run_all.par extracted from the user-saved zhi high Mu.cpar; simfile.sim is a local-output wrapper for this immutable snapshot."
+}
