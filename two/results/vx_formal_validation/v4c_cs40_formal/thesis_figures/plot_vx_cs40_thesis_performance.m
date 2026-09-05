@@ -18,7 +18,7 @@ assert(R.metadata.formalRuntime&&strcmp(R.metadata.verdict,'VX_CS40_V4C_FORMAL_P
     'VX:V4C:FigurePerformanceEvidence');
 t=double(R.time(:));vxTrue=double(R.vxTrue(:));vxTraditional=double(D.vxTraditional(:));
 vxFusion=double(R.estY(:,1));assert(numel(t)==numel(vxTraditional),'VX:V4C:FigurePerformanceInterface');
-eTraditional=vxTraditional-vxTrue;eFusion=vxFusion-vxTrue;
+eFusion=vxFusion-vxTrue;
 
 % Frozen Vy palette, hierarchy, axes, grid, typography, spacing and 175 mm width.
 C.black=[17 17 17]/255;C.blue=[0 114 178]/255;C.green=[0 158 115]/255;
@@ -34,15 +34,16 @@ title(ax1,'(a) Longitudinal speed estimation','FontWeight','normal');apply_froze
 legend(ax1,{'CarSim V_x','Traditional WSS','Fusion'},'Location','northoutside', ...
     'Orientation','horizontal','Box','off');
 ax2=nexttile(tl,2);hold(ax2,'on');
-plot(ax2,t,eTraditional,'-.','Color',C.blue,'LineWidth',2.0);
 plot(ax2,t,eFusion,'--','Color',C.green,'LineWidth',2.3);
 yline(ax2,0,'-','Color',C.black,'LineWidth',1.0,'HandleVisibility','off');hold(ax2,'off');
-xlabel(ax2,'Time / s');ylabel(ax2,'Estimation error / (m·s^{-1})');
-title(ax2,'(b) Longitudinal speed estimation error','FontWeight','normal');apply_frozen_vy_axes(ax2,C);
-legend(ax2,{'Traditional WSS error','Fusion error'},'Location','northoutside', ...
+xlabel(ax2,'Time / s');ylabel(ax2,'Fusion estimation error / (m·s^{-1})');
+title(ax2,'(b) Fusion estimation error','FontWeight','normal');apply_frozen_vy_axes(ax2,C);
+finiteFusionError=eFusion(isfinite(eFusion));assert(~isempty(finiteFusionError),'VX:V4C:FigureFusionError');
+eMax=max(abs(finiteFusionError));eLimit=max(1.15*eMax,0.05);ylim(ax2,[-eLimit eLimit]);
+legend(ax2,{'Fusion error'},'Location','northoutside', ...
     'Orientation','horizontal','Box','off');
 for ax=[ax1 ax2]
-    for boundary=[3 6 9 11.5 12]
+    for boundary=[3 6 9 11.5]
         xline(ax,boundary,'--','Color',C.boundary,'LineWidth',1.2,'HandleVisibility','off');
     end
 end
