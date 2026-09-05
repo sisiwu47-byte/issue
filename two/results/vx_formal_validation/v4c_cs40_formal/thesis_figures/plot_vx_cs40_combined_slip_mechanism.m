@@ -54,6 +54,18 @@ for ax=[ax1 ax2 ax3]
     end
 end
 linkaxes([ax1 ax2 ax3],'x');set([ax1 ax2 ax3],'XLim',[0 16]);
+% Preserve the full severe-braking range above, while exposing the positive drive-slip gate.
+drawnow;mainPos=ax1.Position;
+inset=axes(fig,'Position',[mainPos(1)+0.55*mainPos(3),mainPos(2)+0.47*mainPos(4), ...
+    0.40*mainPos(3),0.40*mainPos(4)]);hold(inset,'on');drive=t>=3&t<=7;
+plot(inset,t(drive),kappaRear(drive,1),'-','Color',C.blue,'LineWidth',2.0);
+plot(inset,t(drive),kappaRear(drive,2),'--','Color',C.orange,'LineWidth',2.0);
+yline(inset,0.10,'--','Color',C.threshold,'LineWidth',1.5,'HandleVisibility','off');hold(inset,'off');
+xlim(inset,[3 7]);driveValues=kappaRear(drive,:);driveValues=driveValues(isfinite(driveValues));
+assert(~isempty(driveValues),'VX:V4C:InsetDriveData');dMin=min([driveValues;0.10]);dMax=max([driveValues;0.10]);
+dSpan=max(dMax-dMin,0.05);ylim(inset,[dMin-0.12*dSpan,dMax+0.12*dSpan]);
+title(inset,'Drive-slip detail','FontWeight','normal');apply_frozen_vy_axes(inset,C);
+set(inset,'FontSize',7.5,'LineWidth',1.0);xlabel(inset,'Time / s');ylabel(inset,'\kappa_i');
 base=fullfile(figDir,'VX_FIG_CS40_combined_slip_mechanism');
 exportgraphics(fig,[base '.png'],'Resolution',600);exportgraphics(fig,[base '.pdf'],'ContentType','vector');
 print(fig,[base '.svg'],'-dsvg');close(fig);
