@@ -1,0 +1,26 @@
+SIMFILE
+
+SET_MACRO $(ROOT_FILE_NAME)$ VX_ND60_Formal
+SET_MACRO $(OUTPUT_PATH)$ .
+SET_MACRO $(WORK_DIR)$ D:\carsim\CarSim2021.0_Data\
+SET_MACRO $(OUTPUT_FILE_PREFIX)$ LastRun
+
+FILEBASE $(OUTPUT_FILE_PREFIX)$
+INPUT Run_all.par
+INPUTARCHIVE LastRun_all.par
+ECHO LastRun_echo.par
+FINAL LastRun_end.par
+LOGFILE LastRun_log.txt
+ERDFILE LastRun.vs
+PROGDIR D:\carsim\CarSim2021.0_Prog\
+DATADIR D:\carsim\CarSim2021.0_Data\
+RESOURCEDIR D:\carsim\CarSim2021.0_Prog\\Resources\
+PRODUCT_ID CarSim
+PRODUCT_VER 2021.0
+ANIFILE D:\carsim\CarSim2021.0_Data\runs\animator.par
+VEHICLE_CODE i_i
+EXT_MODEL_STEP 0.00100000
+PORTS_IMP 1,16
+PORTS_EXP 1,35
+
+END
